@@ -26,12 +26,56 @@ print("Welcome to the UW Calculator Playground")
 //: 
 //: For this latter set of operations, it is safe to assume that `["count"]` (with no additional arguments) is 0, `["avg"]` is also 0, and `["fact"]` is 0. `["1", "fact"]` should return 1, and `["0", "fact"]` should also return 1. (Yes, 0-factorial is 1. True story.)
 //: 
-func calculate(_ args: [String]) -> Int {
-    return -1
+func calculate(_ inputs: [String]) -> Int {
+    if inputs.count == 3 && ["+", "-", "*", "/", "%"].contains(inputs[1]) {
+        let a = Int(inputs[0])!
+        let b = Int(inputs[2])!
+        switch inputs[1] {
+        case "+":
+            return a + b
+        case "-":
+            return a - b
+        case "*":
+            return a * b
+        case "/":
+            return a / b // Swift already performs integer division with Ints
+        case "%":
+            return a % b
+        default:
+            return 0
+        }
+    } else if let operation = inputs.last {
+        switch operation {
+        case "count":
+            if inputs.count == 1 {
+                            // If "fact" is the only input, it implies an invalid input for factorial calculation
+                            return 0
+                        }
+            return inputs.count - 1
+        case "avg":
+            let numbers = inputs.dropLast().compactMap { Int($0) } // any nil values are removed from comapct map 
+            if numbers.isEmpty {
+                            return 0 // Return 0 if there are no numbers to average
+                        }
+            return numbers.reduce(0, +) / numbers.count
+        case "fact":
+            if inputs.count == 1 {
+                            // Explicitly check for ["fact"] and return 0 as per your requirement
+                            return 0
+                        }
+            let n = Int(inputs[0]) ?? 0
+            return (1...max(n, 1)).reduce(1, *)
+        default:
+            return 0
+        }
+    } else {
+        return 0
+    }
 }
 
 func calculate(_ arg: String) -> Int {
-    return -1
+    var mapped = arg.split(separator: " ").map(String.init)
+    return calculate(mapped)
 }
 
 //: Below this are the test expressions/calls to verify if your code is correct.
